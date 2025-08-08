@@ -1,35 +1,32 @@
-/* src/App.css */
+/* src/App.css (tambahan) */
 
-/* Menghapus margin default dari browser */
-body {
-  margin: 0;
+/* Styling untuk konten di dalam popup MapLibre */
+.maplibregl-popup-content {
+  padding: 15px;
   font-family: sans-serif;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
-/* Membuat wadah utama aplikasi memenuhi seluruh layar */
-.App {
-  text-align: center;
+.maplibregl-popup-content h3 {
+  margin: 0 0 5px 0;
+  color: #1B5E20; /* Warna hijau tema kita */
 }
 
-.App-header {
-  padding: 20px;
-  background-color: #f7f7f7;
-  border-bottom: 1px solid #ddd;
-}
-
-.App-header h1 {
+.maplibregl-popup-content p {
   margin: 0;
-  font-size: 2.5em;
-  color: #1B5E20;
-}
-
-.App-header p {
-  margin: 5px 0 0;
-  font-size: 1.2em;
+  font-size: 0.9em;
   color: #333;
 }
 
-/* Memberi ruang untuk peta */
-.App-main {
-  padding: 20px;
+/* Mengubah warna tombol close (x) */
+.maplibregl-popup-close-button {
+  font-size: 1.5em;
+  color: #777;
+  padding: 0 5px;
+}
+
+.maplibregl-popup-close-button:hover {
+  background-color: transparent;
+  color: #000;
 }
