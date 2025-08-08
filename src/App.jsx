@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import './App.css';
 import MapComponent from './components/Map.jsx';
+// 1. Impor komponen form baru kita
+import AddDestinationForm from './components/AddDestinationForm.jsx';
 import { supabase } from './supabaseClient.js';
 
 function App() {
@@ -24,6 +26,14 @@ function App() {
     getDestinations();
   }, []);
 
+  // 2. Buat fungsi untuk menangani data baru dari form
+  // Fungsi ini akan menerima 'newDestination' dari komponen anak (form)
+  const handleNewDestination = (newDestination) => {
+    // Tambahkan destinasi baru ke dalam state 'destinations' yang sudah ada
+    // Ini akan secara otomatis memicu re-render dan memperbarui peta serta daftar
+    setDestinations(currentDestinations => [...currentDestinations, newDestination]);
+  };
+
   return (
     <div className="App">
       <header className="App-header">
@@ -32,10 +42,11 @@ function App() {
       </header>
 
       <main className="App-main">
-        {/* PERUBAHAN DI SINI: Kita mengirim data 'destinations' ke dalam MapComponent */}
+        {/* 3. Tampilkan komponen form dan teruskan fungsi handleNewDestination sebagai prop */}
+        <AddDestinationForm onNewDestination={handleNewDestination} />
+
         <MapComponent destinations={destinations} />
 
-        {/* Kita bisa tetap menampilkan daftar teks untuk debugging */}
         <div className="destinations-list">
           <h2>Daftar Destinasi (dari Database)</h2>
           {destinations.length > 0 ? (
