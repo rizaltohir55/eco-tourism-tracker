@@ -1,24 +1,35 @@
 /* src/App.css */
 
-/* 
-  Aturan ini menargetkan elemen root dari aplikasi kita, 
-  yang secara default adalah sebuah div dengan id="root".
-*/
-#root {
-  max-width: 1280px; /* Lebar maksimum konten */
-  margin: 0 auto; /* Trik untuk membuat konten berada di tengah secara horizontal */
-  padding: 2rem; /* Memberi jarak antara konten dengan tepi jendela browser */
-  text-align: center; /* Membuat semua teks di dalamnya menjadi rata tengah */
+/* Menghapus margin default dari browser */
+body {
+  margin: 0;
+  font-family: sans-serif;
 }
 
-/* Aturan ini hanya berlaku untuk elemen <h1> */
-h1 {
-  font-size: 2.5em; /* Membuat ukuran font lebih besar */
-  color: #1B5E20; /* Warna hijau tua, sesuai dengan tema eco-tourism kita */
+/* Membuat wadah utama aplikasi memenuhi seluruh layar */
+.App {
+  text-align: center;
 }
 
-/* Aturan ini hanya berlaku untuk elemen <p> (paragraf) */
-p {
-  font-size: 1.2em; /* Sedikit memperbesar ukuran font paragraf agar mudah dibaca */
-  color: #333; /* Warna abu-abu gelap untuk teks biasa */
+.App-header {
+  padding: 20px;
+  background-color: #f7f7f7;
+  border-bottom: 1px solid #ddd;
+}
+
+.App-header h1 {
+  margin: 0;
+  font-size: 2.5em;
+  color: #1B5E20;
+}
+
+.App-header p {
+  margin: 5px 0 0;
+  font-size: 1.2em;
+  color: #333;
+}
+
+/* Memberi ruang untuk peta */
+.App-main {
+  padding: 20px;
 }

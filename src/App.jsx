@@ -1,23 +1,23 @@
-// src/App.tsx
+// src/App.jsx
 
-import './App.css'; // Baris ini menghubungkan file App.tsx dengan file gayanya, App.css
+import './App.css';
+import MapComponent from './components/Map.jsx';
 
 function App() {
-  // 'return' adalah bagian yang menentukan apa yang akan ditampilkan di layar.
-  // JSX di bawah ini terlihat seperti HTML.
   return (
-    // <> dan </> adalah Fragment, sebuah pembungkus tak terlihat.
-    <>
-      <h1>Eco-Tourism Tracker</h1>
-      
-      <div>
-        <p>
-          Selamat datang di platform untuk mempromosikan wisata ramah lingkungan di Indonesia!
-        </p>
-      </div>
-    </>
+    // Kita menggunakan div sebagai pembungkus utama, bukan Fragment (<>)
+    // agar kita bisa menatanya dengan CSS.
+    <div className="App">
+      <header className="App-header">
+        <h1>Eco-Tourism Tracker</h1>
+        <p>Temukan destinasi ramah lingkungan di seluruh Indonesia!</p>
+      </header>
+
+      <main className="App-main">
+        <MapComponent />
+      </main>
+    </div>
   );
 }
 
-// Baris ini membuat komponen App bisa digunakan oleh file lain (khususnya main.tsx).
 export default App;
