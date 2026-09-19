@@ -1,6 +1,12 @@
 // src/components/Map.jsx
 // Peta MapLibre dengan marker per tipe destinasi, popup, dan fly-to
 // saat destinasi dipilih dari panel daftar/search.
+//
+// TILE SOURCE: gratis, tanpa registrasi.
+//   - Utama  : OSM Americana (vector) — openstreetmap.us
+//   - Fallback: raster OSM standar — tile.openstreetmap.org
+// MapLibre bisa pakai tile raster langsung lewat style.sources; style
+// raster di-define inline di bawah (tanpa style.json eksternal).
 
 import React, { useState, useRef, useEffect } from 'react';
 // "react-map-gl/maplibre" = entry khusus MapLibre (v8 memisahkan entry.mapbox
@@ -16,8 +22,35 @@ const TYPE_COLORS = {
   Akomodasi: '#1565c0',
 };
 
+// Style utama: OSM Americana (vector tiles gratis, tanpa key).
+const VECTOR_STYLE = 'https://americanamap.org/style.json';
+// Style fallback: raster OSM standar, di-define inline (peta tetap jalan
+// walau CDN vector sedang down).
+const RASTER_STYLE = {
+  version: 8,
+  name: 'OSM Standard (raster fallback)',
+  sources: {
+    osm: {
+      type: 'raster',
+      tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
+      tileSize: 256,
+      attribution: '&copy; OpenStreetMap contributors',
+    },
+  },
+  layers: [
+    {
+      id: 'osm-raster',
+      type: 'raster',
+      source: 'osm',
+      paint: {},
+    },
+  ],
+};
+
 function MapComponent({ destinations, selected, onSelect }) {
   const [popupInfo, setPopupInfo] = useState(null);
+  const [mapStyle, setMapStyle] = useState(VECTOR_STYLE);
+  const [sourceOk, setSourceOk] = useState(null); // null = belum dicek
   const mapRef = useRef(null);
 
   const initialViewState = {
@@ -26,8 +59,28 @@ function MapComponent({ destinations, selected, onSelect }) {
     zoom: 4.5
   };
 
-  const MAPTILER_API_KEY = import.meta.env.VITE_MAPTILER_API_KEY;
-  const mapStyle = `https://api.maptiler.com/maps/streets-v2/style.json?key=${MAPTILER_API_KEY}`;
+  // Cek ketersediaan vector style sekali saat mount; kalau gagal, pakai raster.
+  useEffect(() => {
+    let cancelled = false;
+    fetch(VECTOR_STYLE)
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then(() => {
+        if (!cancelled) {
+          setSourceOk(true);
+          setMapStyle(VECTOR_STYLE);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setSourceOk(false);
+          setMapStyle(RASTER_STYLE);
+        }
+      });
+    return () => { cancelled = true; };
+  }, []);
 
   // Terbang ke destinasi yang dipilih dari daftar/search.
   useEffect(() => {
@@ -42,7 +95,7 @@ function MapComponent({ destinations, selected, onSelect }) {
   }, [selected]);
 
   return (
-    <div style={{ height: '80vh', width: '100%' }}>
+    <div style={{ height: '80vh', width: '100%', position: 'relative' }}>
       <Map
         ref={mapRef}
         initialViewState={initialViewState}
@@ -106,6 +159,25 @@ function MapComponent({ destinations, selected, onSelect }) {
           </Popup>
         )}
       </Map>
+
+      {sourceOk === false && (
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 12,
+            left: 12,
+            zIndex: 5,
+            background: 'rgba(255, 255, 255, 0.95)',
+            border: '1px solid #ccc',
+            borderRadius: 6,
+            padding: '6px 10px',
+            fontSize: '0.75rem',
+            color: '#555',
+          }}
+        >
+          Peta raster fallback (tile OSM) — style utama sedang tidak tersedia
+        </div>
+      )}
     </div>
   );
 }

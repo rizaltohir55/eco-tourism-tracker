@@ -18,7 +18,7 @@ Dibangun dengan React 19 + Vite 7, peta MapLibre GL, dan backend Supabase.
 | Bagian | Teknologi |
 |---|---|
 | Frontend | React 19, Vite 7 |
-| Peta | MapLibre GL + react-map-gl, tile dari MapTiler |
+| Peta | MapLibre GL + react-map-gl, tile OSM Americana (gratis, tanpa registrasi) |
 | Backend | Supabase (PostgreSQL + REST instan) |
 
 ## Setup
@@ -63,24 +63,20 @@ Dibangun dengan React 19 + Vite 7, peta MapLibre GL, dan backend Supabase.
      on destinations for delete using (true);
    ```
 
-3. **Ambil API key MapTiler**
-
-   Daftar gratis di [maptiler.com](https://www.maptiler.com) dan buat key untuk
-   map style `streets-v2`.
-
-4. **Konfigurasi environment variables**
+3. **Konfigurasi environment variables**
 
    Salin `.env.example` menjadi `.env.local` dan isi:
 
    ```env
    VITE_SUPABASE_URL=https://xxxxxxxxxxxx.supabase.co
-   VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-   VITE_MAPTILER_API_KEY=your_maptiler_key
+   VITE_SUPABASE_ANON_KEY=eyJhbG...VCJ9...
    ```
 
    > `.env.local` di-gitignore dan tidak akan pernah ikut ter-commit.
+   > Aplikasi hanya membutuhkan kredensial Supabase. Peta memakai tile OSM
+   > Americana yang gratis dan tanpa registrasi.
 
-5. **Jalankan/Build**
+4. **Jalankan/Build**
 
    ```bash
    npm run dev      # development server di http://localhost:5173
