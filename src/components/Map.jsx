@@ -3,6 +3,8 @@
 // saat destinasi dipilih dari panel daftar/search.
 
 import React, { useState, useRef, useEffect } from 'react';
+// "react-map-gl/maplibre" = entry khusus MapLibre (v8 memisahkan entry.mapbox
+// dan entry.maplibre). Import ini pula yang membawa maplibre-gl ke chunk peta.
 import { Map, Marker, Popup } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 

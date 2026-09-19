@@ -51,17 +51,27 @@ function AddDestinationForm({ onNewDestination }) {
     <div className="form-container">
       <h2>Tambah Destinasi Baru</h2>
       <form onSubmit={handleSubmit}>
-        <input type="text" placeholder="Nama Destinasi" value={name} onChange={(e) => setName(e.target.value)} required />
-        <textarea placeholder="Deskripsi" value={description} onChange={(e) => setDescription(e.target.value)} />
-        <input type="number" step="any" placeholder="Latitude" value={latitude} onChange={(e) => setLatitude(e.target.value)} required />
-        <input type="number" step="any" placeholder="Longitude" value={longitude} onChange={(e) => setLongitude(e.target.value)} required />
-        <select value={type} onChange={(e) => setType(e.target.value)}>
+        <label className="visually-hidden" htmlFor="add-name">Nama destinasi</label>
+        <input id="add-name" type="text" placeholder="Nama Destinasi" value={name} onChange={(e) => setName(e.target.value)} required
+          aria-label="Nama destinasi" />
+        <label className="visually-hidden" htmlFor="add-description">Deskripsi destinasi</label>
+        <textarea id="add-description" placeholder="Deskripsi" value={description} onChange={(e) => setDescription(e.target.value)}
+          aria-label="Deskripsi destinasi" />
+        <label className="visually-hidden" htmlFor="add-latitude">Latitude</label>
+        <input id="add-latitude" type="number" step="any" placeholder="Latitude" value={latitude} onChange={(e) => setLatitude(e.target.value)} required
+          aria-label="Latitude destinasi" />
+        <label className="visually-hidden" htmlFor="add-longitude">Longitude</label>
+        <input id="add-longitude" type="number" step="any" placeholder="Longitude" value={longitude} onChange={(e) => setLongitude(e.target.value)} required
+          aria-label="Longitude destinasi" />
+        <label className="visually-hidden" htmlFor="add-type">Tipe destinasi</label>
+        <select id="add-type" value={type} onChange={(e) => setType(e.target.value)}
+          aria-label="Tipe destinasi">
           <option value="Alam">Alam</option>
           <option value="Budaya">Budaya</option>
           <option value="Kuliner">Kuliner</option>
           <option value="Akomodasi">Akomodasi</option>
         </select>
-        <button type="submit" disabled={loading}>
+        <button type="submit" disabled={loading} aria-label="Simpan destinasi baru">
           {loading ? 'Menyimpan...' : 'Simpan Destinasi'}
         </button>
         {error && <p className="error-message">Error: {error}</p>}
