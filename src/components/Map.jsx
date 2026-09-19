@@ -1,15 +1,22 @@
 // src/components/Map.jsx
+// Peta MapLibre dengan marker per tipe destinasi, popup, dan fly-to
+// saat destinasi dipilih dari panel daftar/search.
 
-// 1. Impor 'useState' dari React
-import React, { useState } from 'react';
-// 2. Impor 'Map', 'Marker', dan sekarang 'Popup'
+import React, { useState, useRef, useEffect } from 'react';
 import { Map, Marker, Popup } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
-function MapComponent({ destinations }) {
-  // 3. Buat state baru untuk menyimpan informasi popup yang sedang aktif.
-  // Awalnya null, yang berarti tidak ada popup yang ditampilkan.
+// Warna marker per tipe destinasi (default hijau untuk tipe tak dikenal).
+const TYPE_COLORS = {
+  Alam: '#2e7d32',
+  Budaya: '#7b1fa2',
+  Kuliner: '#e65100',
+  Akomodasi: '#1565c0',
+};
+
+function MapComponent({ destinations, selected, onSelect }) {
   const [popupInfo, setPopupInfo] = useState(null);
+  const mapRef = useRef(null);
 
   const initialViewState = {
     longitude: 118.015776,
@@ -20,45 +27,76 @@ function MapComponent({ destinations }) {
   const MAPTILER_API_KEY = import.meta.env.VITE_MAPTILER_API_KEY;
   const mapStyle = `https://api.maptiler.com/maps/streets-v2/style.json?key=${MAPTILER_API_KEY}`;
 
+  // Terbang ke destinasi yang dipilih dari daftar/search.
+  useEffect(() => {
+    if (selected && mapRef.current) {
+      mapRef.current.flyTo({
+        center: [selected.longitude, selected.latitude],
+        zoom: Math.max(mapRef.current.getZoom(), 8),
+        duration: 800,
+      });
+      setPopupInfo(selected);
+    }
+  }, [selected]);
+
   return (
     <div style={{ height: '80vh', width: '100%' }}>
       <Map
+        ref={mapRef}
         initialViewState={initialViewState}
         mapStyle={mapStyle}
       >
-        {/* Looping untuk membuat Marker untuk setiap destinasi */}
-        {destinations && destinations.map(dest => (
-          <Marker
-            key={dest.id}
-            longitude={dest.longitude}
-            latitude={dest.latitude}
-            anchor="bottom"
-          >
-            {/* 4. Saat div emoji ini diklik, kita set popupInfo menjadi data destinasi ini */}
-            <div 
-              style={{ fontSize: '24px', cursor: 'pointer' }}
-              onClick={e => {
-                // Jangan biarkan klik ini juga dianggap sebagai klik pada peta
-                e.stopPropagation( );
-                setPopupInfo(dest);
-              }}
+        {destinations && destinations.map(dest => {
+          const isSelected = selected && selected.id === dest.id;
+          const color = TYPE_COLORS[dest.type] || '#2e7d32';
+          return (
+            <Marker
+              key={dest.id}
+              longitude={dest.longitude}
+              latitude={dest.latitude}
+              anchor="bottom"
             >
-              📍
-            </div>
-          </Marker>
-        ))}
+              <div
+                style={{
+                  fontSize: isSelected ? '34px' : '24px',
+                  cursor: 'pointer',
+                  filter: isSelected
+                    ? 'drop-shadow(0 0 6px rgba(0,0,0,0.45))'
+                    : 'none',
+                  transition: 'font-size 120ms',
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onSelect(dest);
+                  setPopupInfo(dest);
+                }}
+              >
+                <span
+                  style={{
+                    display: 'inline-block',
+                    width: '14px',
+                    height: '14px',
+                    borderRadius: '50%',
+                    background: color,
+                    border: '2px solid white',
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.4)',
+                  }}
+                  title={`${dest.name} (${dest.type})`}
+                />
+              </div>
+            </Marker>
+          );
+        })}
 
-        {/* 5. Bagian untuk menampilkan Popup */}
-        {/* Jika popupInfo ada isinya (tidak null), maka tampilkan komponen Popup */}
         {popupInfo && (
           <Popup
             anchor="top"
             longitude={popupInfo.longitude}
             latitude={popupInfo.latitude}
-            // Saat tombol close (x) pada popup diklik, set popupInfo kembali ke null
             onClose={() => setPopupInfo(null)}
+            closeOnClick={false}
           >
-            <div>
+            <div className="popup-content">
               <h3>{popupInfo.name}</h3>
               <p>{popupInfo.description}</p>
               <p>Tipe: {popupInfo.type}</p>
