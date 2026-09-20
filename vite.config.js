@@ -4,6 +4,11 @@ import react from '@vitejs/plugin-react-swc'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  server: {
+    // Izinkan akses lewat tunnel publik (mis. Pinggy). Tanpa ini, Vite
+    // menolak request dengan Host asing (403 "Blocked request").
+    allowedHosts: 'all',
+  },
   test: {
     environment: 'jsdom',
     globals: true,
